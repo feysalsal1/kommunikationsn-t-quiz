@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="sv">
 <head>
@@ -20,83 +19,183 @@ h2{font-size:22px;line-height:1.35;margin:0 0 20px}.answers{display:grid;gap:12p
 </head>
 <body>
 <main>
-<header class="top"><h1>Kommunikationsnät 1</h1><p>Öva inför quizet – 40 frågor med fyra svarsalternativ</p></header>
+<header class="top"><h1>Kommunikationsnät 1</h1><p>Öva inför quizet – 60 frågor med fyra svarsalternativ</p></header>
 <section class="card" id="quiz">
- <div class="row"><span id="counter">Fråga 1 av 40</span><span id="points">Rätt: 0</span></div>
- <div class="track"><div class="fill" id="progress"></div></div>
- <h2 id="question"></h2>
- <div class="answers" id="answers"></div>
- <div class="feedback" id="feedback" aria-live="polite"></div>
- <div class="controls"><button class="action secondary" id="restart" type="button">Börja om</button><button class="action" id="next" type="button" disabled>Nästa fråga</button></div>
+<div class="row"><span id="counter">Fråga 1 av 60</span><span id="points">Rätt: 0</span></div>
+<div class="track"><div class="fill" id="progress"></div></div>
+<h2 id="question"></h2>
+<div class="answers" id="answers"></div>
+<div class="feedback" id="feedback" aria-live="polite"></div>
+<div class="controls"><button class="action secondary" id="restart" type="button">Börja om</button><button class="action" id="next" type="button" disabled>Nästa fråga</button></div>
 </section>
 <section class="card result hidden" id="result">
- <h2>Quizet är klart!</h2><div class="score" id="score"></div><p id="message"></p>
- <p class="small">Du kan göra om quizet och träna igen.</p>
- <button class="action" id="again" type="button">Gör om quizet</button>
+<h2>Quizet är klart!</h2><div class="score" id="score"></div><p id="message"></p>
+<p class="small">Du kan göra om quizet och träna igen.</p>
+<button class="action" id="again" type="button">Gör om quizet</button>
 </section>
 </main>
 <script>
-const questions = [{"q": "Vad är ett datornätverk?", "a": ["Ett program för ordbehandling", "En enda dator utan anslutning", "Flera enheter som kan kommunicera med varandra", "En typ av batteri"], "correct": 2, "why": "Ett nätverk kopplar ihop enheter så att de kan utbyta data och dela resurser."}, {"q": "Vad betyder LAN?", "a": ["Long Analog Network", "Large Access Number", "Local Area Network", "Linked Automatic Node"], "correct": 2, "why": "LAN är ett lokalt nätverk, till exempel i en bostad eller skola."}, {"q": "Vad betyder WAN?", "a": ["Wireless Access Name", "Wide Area Network", "Wired Analog Node", "Web Application Network"], "correct": 1, "why": "WAN är ett geografiskt större nätverk som kopplar samman nätverk över längre avstånd."}, {"q": "Vad betyder WLAN?", "a": ["Wired Local Area Node", "Web Local Address Number", "Wide Link Analog Network", "Wireless Local Area Network"], "correct": 3, "why": "WLAN är ett trådlöst lokalt nätverk, vanligtvis Wi-Fi."}, {"q": "Vilken uppgift har en router?", "a": ["Lagra alla lösenord", "Skriva ut dokument", "Omvandla växelström till likström", "Koppla samman nätverk och vidarebefordra trafik mellan dem"], "correct": 3, "why": "En router skickar trafik mellan olika IP-nätverk, exempelvis hemnätverket och internet."}, {"q": "Vilken uppgift har en switch?", "a": ["Koppla ihop enheter i ett lokalt nätverk", "Tilldela alltid publika IP-adresser", "Förstärka ljudsignaler", "Visa webbsidor"], "correct": 0, "why": "En switch kopplar ihop nätverksenheter i ett LAN och skickar ramar till rätt port."}, {"q": "Vad används en accesspunkt till?", "a": ["Att mäta kabelns längd", "Att lagra säkerhetskopior", "Att kyla en server", "Att ge trådlös åtkomst till ett nätverk"], "correct": 3, "why": "En accesspunkt låter trådlösa enheter ansluta till ett nätverk."}, {"q": "Vad är en brandvägg?", "a": ["En fysisk vägg i ett serverrum", "En funktion som filtrerar nätverkstrafik enligt regler", "Ett verktyg för att skala kabel", "En kabeltyp"], "correct": 1, "why": "En brandvägg tillåter eller blockerar trafik utifrån säkerhetsregler."}, {"q": "Vad är en server?", "a": ["En dator eller tjänst som tillhandahåller resurser till klienter", "En typ av skärm", "En nätverkskabel", "En kontakt för fiber"], "correct": 0, "why": "En server erbjuder exempelvis filer, webbsidor eller inloggningstjänster."}, {"q": "Vad är en klient i ett nätverk?", "a": ["En internetleverantör", "En typ av router", "En enhet eller ett program som använder en tjänst", "En kabeltestare"], "correct": 2, "why": "En klient begär eller använder tjänster från exempelvis en server."}, {"q": "Vad är en topologi?", "a": ["En typ av fiberkontakt", "Ett lösenordsformat", "En internethastighet", "Nätverkets fysiska eller logiska uppbyggnad"], "correct": 3, "why": "Topologi beskriver hur nätverkets enheter och länkar är organiserade."}, {"q": "Vilken topologi är vanlig i moderna Ethernet-LAN?", "a": ["Buss", "Stjärna", "Full mesh i alla hem", "Ring"], "correct": 1, "why": "I stjärntopologi ansluts enheterna till en central switch."}, {"q": "Vad är internet?", "a": ["En typ av nätverkskontakt", "Ett enda lokalt nätverk", "Ett globalt nätverk av sammankopplade nätverk", "Ett operativsystem"], "correct": 2, "why": "Internet består av många sammankopplade nätverk som använder gemensamma protokoll."}, {"q": "Vad är en IP-adress?", "a": ["En logisk adress som identifierar ett nätverksgränssnitt", "En kabelstandard", "Ett Wi-Fi-lösenord", "Ett serienummer på en skärm"], "correct": 0, "why": "IP-adresser används för att adressera och routa datapaket i IP-nätverk."}, {"q": "Hur många bitar består en IPv4-adress av?", "a": ["16", "32", "64", "128"], "correct": 1, "why": "IPv4-adresser är 32 bitar långa."}, {"q": "Hur många bitar består en IPv6-adress av?", "a": ["64", "32", "48", "128"], "correct": 3, "why": "IPv6-adresser är 128 bitar långa."}, {"q": "Vilket är ett privat IPv4-adressintervall?", "a": ["192.168.0.0/16", "8.8.8.0/24", "1.1.1.0/24", "203.0.113.0/24"], "correct": 0, "why": "192.168.0.0/16 är ett av de privata IPv4-intervallen."}, {"q": "Vad används nätmasken till?", "a": ["Att visa datorns modell", "Att skilja nätverksdelen från värddelen i en IPv4-adress", "Att ange kabelns längd", "Att kryptera Wi-Fi"], "correct": 1, "why": "Nätmasken visar vilka bitar som tillhör nätverket respektive värdadressen."}, {"q": "Vad är standard-gateway?", "a": ["En DNS-post", "Enheten som skickar trafik vidare till andra nätverk", "Datorns skrivare", "En fiberkontakt"], "correct": 1, "why": "Standard-gateway är normalt routern som används för trafik utanför det lokala nätet."}, {"q": "Vad gör DHCP?", "a": ["Tilldelar nätverksinställningar automatiskt", "Krypterar filer", "Översätter domännamn till IP-adresser", "Testar fiberljus"], "correct": 0, "why": "DHCP kan automatiskt ge klienter IP-adress, nätmask, gateway och DNS-server."}, {"q": "Vad gör DNS?", "a": ["Översätter domännamn till IP-adresser", "Blockerar all internettrafik", "Mäter signalstyrka", "Tilldelar MAC-adresser"], "correct": 0, "why": "DNS hjälper till att hitta IP-adressen som hör till ett domännamn."}, {"q": "Vad är en MAC-adress?", "a": ["En IP-nätmask", "Ett lösenord", "En publik webbadress", "En adress på länklagret som identifierar ett nätverksgränssnitt"], "correct": 3, "why": "MAC-adresser används bland annat för kommunikation inom ett lokalt Ethernet-nät."}, {"q": "Vad betyder att en IP-adress är dynamisk?", "a": ["Den kan tilldelas automatiskt och ändras över tid", "Den fungerar bara med fiber", "Den är alltid samma", "Den saknar nätmask"], "correct": 0, "why": "Dynamiska adresser delas ofta ut av DHCP och kan ändras."}, {"q": "Vad är en statisk IP-adress?", "a": ["En adress som är manuellt eller fast konfigurerad", "En adress som alltid slumpas fram", "En MAC-adress", "En adress som bara används i Wi-Fi"], "correct": 0, "why": "En statisk adress är avsedd att inte ändras automatiskt."}, {"q": "Vad betyder 127.0.0.1 i IPv4?", "a": ["Standard-gateway", "Loopback-adress till den egna datorn", "Broadcast-adress för alla nät", "DNS-server på internet"], "correct": 1, "why": "127.0.0.1 används för att testa IP-funktioner på den egna datorn."}, {"q": "Vad kan en adress som börjar med 169.254 ofta tyda på i Windows?", "a": ["Att datorn har snabb fiber", "Att routern är avstängd med säkerhet", "Att datorn inte fått en IPv4-adress från DHCP", "Att DNS fungerar perfekt"], "correct": 2, "why": "Windows kan själv tilldela en APIPA-adress när DHCP inte svarar."}, {"q": "Vilken kabeltyp används ofta för Ethernet i byggnader?", "a": ["Högtalarkabel", "Partvinnad kopparkabel", "Koaxialkabel för TV", "USB-kabel"], "correct": 1, "why": "Partvinnad kopparkabel, exempelvis Cat 5e eller Cat 6, används ofta för Ethernet."}, {"q": "Varför är ledarna i nätverkskabel tvinnade par?", "a": ["För att minska störningar och överhörning", "För att den ska fungera som antenn", "För att öka kabelns vikt", "För att göra kabeln genomskinlig"], "correct": 0, "why": "Tvinningen hjälper till att minska elektromagnetiska störningar och överhörning."}, {"q": "Vad betyder UTP?", "a": ["Unshielded Twisted Pair", "Unified Telephone Protocol", "Ultra Thin Plastic", "Universal Transfer Port"], "correct": 0, "why": "UTP är partvinnad kabel utan individuell eller gemensam skärmning."}, {"q": "Vad är en skärmad nätverkskabel till för?", "a": ["Att minska påverkan från elektromagnetiska störningar", "Att ge kabeln högre spänning", "Att ersätta en router", "Att öka IP-adressens längd"], "correct": 0, "why": "Skärmning kan minska störningspåverkan när den installeras och jordas korrekt."}, {"q": "Vad används en RJ45-kontakt (8P8C) vanligtvis till?", "a": ["HDMI-bild", "Eluttag", "Ethernet över partvinnad kopparkabel", "Fiber direkt utan omvandlare"], "correct": 2, "why": "8P8C-kontakter används vanligtvis för Ethernet-kablar med kopparledare."}, {"q": "Vad är en patchpanel?", "a": ["En typ av brandvägg", "En trådlös router", "En panel där fasta nätverkskablar termineras och organiseras", "Ett program för felsökning"], "correct": 2, "why": "Patchpaneler samlar och organiserar kabelanslutningar i exempelvis ett teknikskåp."}, {"q": "Vad används en kabeltestare till?", "a": ["Mäta luftfuktighet", "Kontrollera exempelvis ledarordning och kabelavbrott", "Kryptera nätverkstrafik", "Tilldela IP-adresser"], "correct": 1, "why": "En kabeltestare kan upptäcka felkopplingar, avbrott och vissa andra kabelproblem."}, {"q": "Vad är fiberoptisk kabel?", "a": ["En trådlös signal", "En vanlig elkabel", "Kabel som överför data med ljus", "Kabel som överför data med vatten"], "correct": 2, "why": "Fiber använder ljus i optiska fibrer för att överföra information."}, {"q": "Vilken är en fördel med fiber jämfört med kopparkabel?", "a": ["Fiber kan aldrig skadas", "Fiber leder ström bättre", "Fiber påverkas inte av elektromagnetiska störningar på samma sätt", "Fiber behöver alltid batterier"], "correct": 2, "why": "Optisk fiber är okänslig för elektromagnetiska störningar."}, {"q": "Vad är en nackdel eller försiktighetsåtgärd vid fiberarbete?", "a": ["Fiber fungerar bara utomhus", "Fiber får inte böjas alls", "Fiber måste alltid jordas som koppar", "Man ska aldrig titta in i en aktiv fiberände"], "correct": 3, "why": "Laserljus kan vara skadligt för ögonen. Titta aldrig in i en fiberände."}, {"q": "Vad kan en SFP-modul användas till?", "a": ["Skapa ett lösenord", "Ansluta exempelvis fiber eller koppar till en switch/router", "Mäta temperatur i rummet", "Ersätta operativsystemet"], "correct": 1, "why": "SFP är en utbytbar transceiver som ger en nätverksport ett visst anslutningsgränssnitt."}, {"q": "Vad betyder bandbredd i nätverkssammanhang?", "a": ["Tiden det tar för en signal att nå fram", "Kabelns fysiska bredd", "Den teoretiska eller angivna kapaciteten för dataöverföring", "Antalet användarkonton"], "correct": 2, "why": "Bandbredd beskriver överföringskapacitet, ofta uttryckt i bit per sekund."}, {"q": "Vad betyder genomströmning (throughput)?", "a": ["Den faktiska mängden data som överförs per tidsenhet", "Längden på en kabel", "Antalet routrar i ett nät", "Antalet portar i en switch"], "correct": 0, "why": "Genomströmning är den datahastighet som faktiskt uppnås."}, {"q": "Vad är latens?", "a": ["En metod för kabelmärkning", "Antalet IP-adresser", "En typ av kontakt", "Fördröjningen innan data kommer fram"], "correct": 3, "why": "Latens är fördröjning i kommunikationen, ofta mätt i millisekunder."}];
+const questions = [
+{"q":"Vad är ett datornätverk?","a":["Ett program för ordbehandling","En enda dator utan anslutning","Flera enheter som kan kommunicera med varandra","En typ av batteri"],"correct":2,"why":"Ett nätverk kopplar ihop enheter så att de kan utbyta data och dela resurser."},
+{"q":"Vad betyder LAN?","a":["Long Analog Network","Large Access Number","Local Area Network","Linked Automatic Node"],"correct":2,"why":"LAN är ett lokalt nätverk, till exempel i en bostad eller skola."},
+{"q":"Vad betyder WAN?","a":["Wireless Access Name","Wide Area Network","Wired Analog Node","Web Application Network"],"correct":1,"why":"WAN är ett geografiskt större nätverk som kopplar samman nätverk över längre avstånd."},
+{"q":"Vad betyder WLAN?","a":["Wired Local Area Node","Web Local Address Number","Wide Link Analog Network","Wireless Local Area Network"],"correct":3,"why":"WLAN är ett trådlöst lokalt nätverk, vanligtvis Wi-Fi."},
+{"q":"Vilken uppgift har en router?","a":["Lagra alla lösenord","Skriva ut dokument","Omvandla växelström till likström","Koppla samman nätverk och vidarebefordra trafik mellan dem"],"correct":3,"why":"En router skickar trafik mellan olika IP-nätverk, exempelvis hemnätverket och internet."},
+{"q":"Vilken uppgift har en switch?","a":["Koppla ihop enheter i ett lokalt nätverk","Tilldela alltid publika IP-adresser","Förstärka ljudsignaler","Visa webbsidor"],"correct":0,"why":"En switch kopplar ihop nätverksenheter i ett LAN och skickar ramar till rätt port."},
+{"q":"Vad används en accesspunkt till?","a":["Att mäta kabelns längd","Att lagra säkerhetskopior","Att kyla en server","Att ge trådlös åtkomst till ett nätverk"],"correct":3,"why":"En accesspunkt låter trådlösa enheter ansluta till ett nätverk."},
+{"q":"Vad är en brandvägg?","a":["En fysisk vägg i ett serverrum","En funktion som filtrerar nätverkstrafik enligt regler","Ett verktyg för att skala kabel","En kabeltyp"],"correct":1,"why":"En brandvägg tillåter eller blockerar trafik utifrån säkerhetsregler."},
+{"q":"Vad är en server?","a":["En dator eller tjänst som tillhandahåller resurser till klienter","En typ av skärm","En nätverkskabel","En kontakt för fiber"],"correct":0,"why":"En server erbjuder exempelvis filer, webbsidor eller inloggningstjänster."},
+{"q":"Vad är en klient i ett nätverk?","a":["En internetleverantör","En typ av router","En enhet eller ett program som använder en tjänst","En kabeltestare"],"correct":2,"why":"En klient begär eller använder tjänster från exempelvis en server."},
+{"q":"Vad är en topologi?","a":["En typ av fiberkontakt","Ett lösenordsformat","En internethastighet","Nätverkets fysiska eller logiska uppbyggnad"],"correct":3,"why":"Topologi beskriver hur nätverkets enheter och länkar är organiserade."},
+{"q":"Vilken topologi är vanlig i moderna Ethernet-LAN?","a":["Buss","Stjärna","Full mesh i alla hem","Ring"],"correct":1,"why":"I stjärntopologi ansluts enheterna till en central switch."},
+{"q":"Vad är internet?","a":["En typ av nätverkskontakt","Ett enda lokalt nätverk","Ett globalt nätverk av sammankopplade nätverk","Ett operativsystem"],"correct":2,"why":"Internet består av många sammankopplade nätverk som använder gemensamma protokoll."},
+{"q":"Vad är en IP-adress?","a":["En logisk adress som identifierar ett nätverksgränssnitt","En kabelstandard","Ett Wi-Fi-lösenord","Ett serienummer på en skärm"],"correct":0,"why":"IP-adresser används för att adressera och routa datapaket i IP-nätverk."},
+{"q":"Hur många bitar består en IPv4-adress av?","a":["16","32","64","128"],"correct":1,"why":"IPv4-adresser är 32 bitar långa."},
+{"q":"Hur många bitar består en IPv6-adress av?","a":["64","32","48","128"],"correct":3,"why":"IPv6-adresser är 128 bitar långa."},
+{"q":"Vilket är ett privat IPv4-adressintervall?","a":["192.168.0.0/16","8.8.8.0/24","1.1.1.0/24","203.0.113.0/24"],"correct":0,"why":"192.168.0.0/16 är ett av de privata IPv4-intervallen."},
+{"q":"Vad används nätmasken till?","a":["Att visa datorns modell","Att skilja nätverksdelen från värddelen i en IPv4-adress","Att ange kabelns längd","Att kryptera Wi-Fi"],"correct":1,"why":"Nätmasken visar vilka bitar som tillhör nätverket respektive värdadressen."},
+{"q":"Vad är standard-gateway?","a":["En DNS-post","Enheten som skickar trafik vidare till andra nätverk","Datorns skrivare","En fiberkontakt"],"correct":1,"why":"Standard-gateway är normalt routern som används för trafik utanför det lokala nätet."},
+{"q":"Vad gör DHCP?","a":["Tilldelar nätverksinställningar automatiskt","Krypterar filer","Översätter domännamn till IP-adresser","Testar fiberljus"],"correct":0,"why":"DHCP kan automatiskt ge klienter IP-adress, nätmask, gateway och DNS-server."},
+{"q":"Vad gör DNS?","a":["Översätter domännamn till IP-adresser","Blockerar all internettrafik","Mäter signalstyrka","Tilldelar MAC-adresser"],"correct":0,"why":"DNS hjälper till att hitta IP-adressen som hör till ett domännamn."},
+{"q":"Vad är en MAC-adress?","a":["En IP-nätmask","Ett lösenord","En publik webbadress","En adress på länklagret som identifierar ett nätverksgränssnitt"],"correct":3,"why":"MAC-adresser används bland annat för kommunikation inom ett lokalt Ethernet-nät."},
+{"q":"Vad betyder att en IP-adress är dynamisk?","a":["Den kan tilldelas automatiskt och ändras över tid","Den fungerar bara med fiber","Den är alltid samma","Den saknar nätmask"],"correct":0,"why":"Dynamiska adresser delas ofta ut av DHCP och kan ändras."},
+{"q":"Vad är en statisk IP-adress?","a":["En adress som är manuellt eller fast konfigurerad","En adress som alltid slumpas fram","En MAC-adress","En adress som bara används i Wi-Fi"],"correct":0,"why":"En statisk adress är avsedd att inte ändras automatiskt."},
+{"q":"Vad betyder 127.0.0.1 i IPv4?","a":["Standard-gateway","Loopback-adress till den egna datorn","Broadcast-adress för alla nät","DNS-server på internet"],"correct":1,"why":"127.0.0.1 används för att testa IP-funktioner på den egna datorn."},
+{"q":"Vad kan en adress som börjar med 169.254 ofta tyda på i Windows?","a":["Att datorn har snabb fiber","Att routern är avstängd med säkerhet","Att datorn inte fått en IPv4-adress från DHCP","Att DNS fungerar perfekt"],"correct":2,"why":"Windows kan själv tilldela en APIPA-adress när DHCP inte svarar."},
+{"q":"Vilken kabeltyp används ofta för Ethernet i byggnader?","a":["Högtalarkabel","Partvinnad kopparkabel","Koaxialkabel för TV","USB-kabel"],"correct":1,"why":"Partvinnad kopparkabel, exempelvis Cat 5e eller Cat 6, används ofta för Ethernet."},
+{"q":"Varför är ledarna i nätverkskabel tvinnade par?","a":["För att minska störningar och överhörning","För att den ska fungera som antenn","För att öka kabelns vikt","För att göra kabeln genomskinlig"],"correct":0,"why":"Tvinningen hjälper till att minska elektromagnetiska störningar och överhörning."},
+{"q":"Vad betyder UTP?","a":["Unshielded Twisted Pair","Unified Telephone Protocol","Ultra Thin Plastic","Universal Transfer Port"],"correct":0,"why":"UTP är partvinnad kabel utan individuell eller gemensam skärmning."},
+{"q":"Vad är en skärmad nätverkskabel till för?","a":["Att minska påverkan från elektromagnetiska störningar","Att ge kabeln högre spänning","Att ersätta en router","Att öka IP-adressens längd"],"correct":0,"why":"Skärmning kan minska störningspåverkan när den installeras och jordas korrekt."},
+{"q":"Hur många lager består OSI-modellen av?","a":["4","5","7","8"],"correct":2,"why":"OSI-modellen är uppbyggd av sju lager som beskriver olika delar av nätverkskommunikationen."},
+{"q":"Vilket är det nedersta lagret i OSI-modellen (lager 1)?","a":["Fysiska lagret","Nätslagret","Transportlagret","Applikationslagret"],"correct":0,"why":"Det fysiska lagret hanterar överföring av bitar som elektriska, optiska eller radiosignaler."},
+{"q":"Vilken uppgift har datalänklagret (lager 2)?","a":["Översätta domännamn","Hantera ramar och lokal adressering med MAC-adresser","Tilldela program portar","Visa webbsidor"],"correct":1,"why":"Datalänklagret hanterar bland annat Ethernet-ramar och MAC-adresser på den lokala länken."},
+{"q":"Vilket OSI-lager ansvarar för logisk adressering och vägval mellan nätverk?","a":["Fysiska lagret","Sessionslagret","Nätslagret","Presentationslagret"],"correct":2,"why":"Nätslagret (lager 3) hanterar bland annat IP-adressering och routning."},
+{"q":"På vilket OSI-lager arbetar TCP och UDP?","a":["Lager 2 – datalänklagret","Lager 3 – nätslagret","Lager 4 – transportlagret","Lager 7 – applikationslagret"],"correct":2,"why":"TCP och UDP är transportprotokoll och hör till lager 4."},
+{"q":"Vad är en viktig uppgift för sessionslagret (lager 5)?","a":["Skapa, hantera och avsluta kommunikationssessioner","Skicka elektriska signaler i kabeln","Hitta MAC-adresser i ett LAN","Välja väg mellan IP-nät"],"correct":0,"why":"Sessionslagret beskriver hantering av dialoger och sessioner mellan kommunicerande system."},
+{"q":"Vad förknippas presentationslagret (lager 6) med?","a":["IP-routning","Datans format, kodning och kryptering","Fysiska kontakter","MAC-adresser"],"correct":1,"why":"Presentationslagret hanterar hur data representeras, exempelvis format, kodning och kryptering."},
+{"q":"Vilket lager ligger högst upp i OSI-modellen?","a":["Transportlagret","Nätslagret","Applikationslagret","Datalänklagret"],"correct":2,"why":"Applikationslagret är lager 7 och närmast användarens nätverkstjänster och program."},
+{"q":"Vilket OSI-lager förknippas Ethernet-ramar och MAC-adresser främst med?","a":["Lager 1","Lager 2","Lager 4","Lager 6"],"correct":1,"why":"Ethernet använder datalänklagret (lager 2) för ramar och MAC-adresser."},
+{"q":"Vilket OSI-lager förknippas IP-protokollet främst med?","a":["Lager 1","Lager 2","Lager 3","Lager 5"],"correct":2,"why":"IP arbetar på nätslagret (lager 3), där logisk adressering och routning hanteras."},
+{"q":"Vilken uppgift har DHCP i ett IP-nätverk?","a":["Att automatiskt dela ut IP-inställningar till klienter","Att kryptera all webbtrafik","Att översätta domännamn till IP-adresser","Att kontrollera nätverkskablar elektriskt"],"correct":0,"why":"DHCP delar normalt ut IP-adress, nätmask, standard-gateway och ofta DNS-inställningar automatiskt."},
+{"q":"Vad gör DNS när du skriver in ett domännamn i webbläsaren?","a":["Tilldelar datorn en MAC-adress","Översätter domännamnet till en IP-adress","Krypterar Wi-Fi-lösenordet","Mäter nätverkskabelns längd"],"correct":1,"why":"DNS används för namnuppslagning, till exempel för att hitta IP-adressen som hör till ett domännamn."},
+{"q":"Vad visar nätmasken 255.255.255.0 (/24) i ett vanligt IPv4-nät?","a":["Att 24 bitar används för nätverksprefixet","Att nätverket har exakt 24 datorer","Att IP-adressen är en IPv6-adress","Att 24 bitar används för lösenordet"],"correct":0,"why":"/24 betyder att de första 24 bitarna identifierar nätverksprefixet. Det lämnar 8 bitar för värdadresser."},
+{"q":"Vilken adress är nätverksadressen för 192.168.1.37/24?","a":["192.168.1.37","192.168.1.255","192.168.1.0","192.168.0.1"],"correct":2,"why":"Med /24 är de tre första oktetterna nätverksprefixet. Värdbiten sätts till 0, vilket ger 192.168.1.0."},
+{"q":"Vilken adress är broadcastadressen i nätverket 192.168.1.0/24?","a":["192.168.1.0","192.168.1.1","192.168.1.254","192.168.1.255"],"correct":3,"why":"I ett /24-nät sätts alla värdbitar till 1 för broadcastadressen: 192.168.1.255."},
+{"q":"Vilket kommando används vanligtvis för att testa om en annan enhet kan nås över IP-nätverket?","a":["ping","format","mkdir","print"],"correct":0,"why":"ping skickar normalt ICMP Echo Request och visar om enheten svarar samt ungefärlig svarstid."},
+{"q":"Vilket verktyg visar ofta vägen genom nätverkets routrar till en destination?","a":["ipconfig","traceroute eller tracert","nslookup","hostname"],"correct":1,"why":"traceroute (tracert i Windows) visar nätverkshoppen på vägen mot destinationen."},
+{"q":"Vilket kommando kan användas för att kontrollera vilka DNS-svar ett domännamn ger?","a":["nslookup","ping","net use","tasklist"],"correct":0,"why":"nslookup frågar DNS och kan visa exempelvis vilka IP-adresser ett domännamn pekar på."},
+{"q":"Vilken standardport används normalt av HTTPS?","a":["21","25","80","443"],"correct":3,"why":"HTTPS använder normalt TCP-port 443. HTTP använder normalt port 80."},
+{"q":"Vilken tjänst används normalt för att skicka e-post mellan e-postservrar?","a":["SMTP","DHCP","DNS","SNMP"],"correct":0,"why":"SMTP används för att skicka e-post, bland annat mellan e-postservrar."},
+{"q":"Vad är den viktigaste skillnaden mellan TCP och UDP?","a":["TCP är anslutningsorienterat och hanterar leveransordning; UDP har mindre overhead utan samma leveransgarantier","UDP krypterar alltid data medan TCP aldrig gör det","TCP används bara i trådlösa nät och UDP bara i fiber","Det finns ingen skillnad"],"correct":0,"why":"TCP etablerar en anslutning och tillhandahåller bland annat återöverföring och ordnad leverans. UDP är enklare och saknar dessa inbyggda garantier."},
+{"q":"Vad är syftet med NAT i en vanlig hemrouter?","a":["Att översätta mellan privata och publika IP-adresser","Att omvandla kopparsignal till ljus","Att dela ut domännamn","Att testa om en kabel är hel"],"correct":0,"why":"NAT låter flera enheter med privata adresser dela en publik IP-adress genom adressöversättning."},
+{"q":"Vad används ett VLAN främst till i ett switchat nätverk?","a":["Att dela upp nätverket logiskt i separata broadcastdomäner","Att öka längden på en nätverkskabel","Att ge alla datorer samma IP-adress","Att ersätta behovet av switchar"],"correct":0,"why":"VLAN delar upp ett fysiskt switchnät i logiskt separata nät, vilket kan förbättra struktur och säkerhet."},
+{"q":"Vad gör en brandvägg (firewall)?","a":["Filtrerar nätverkstrafik enligt regler","Laddar datorns batteri","Översätter alltid IPv4 till IPv6","Förstärker Wi-Fi-signalen"],"correct":0,"why":"En brandvägg tillåter eller blockerar trafik utifrån regler, till exempel adresser, portar och protokoll."},
+{"q":"Vilket påstående om WPA2 och WPA3 är korrekt?","a":["De är säkerhetsstandarder för trådlösa nätverk","De är typer av fiberkontakter","De är IP-versioner","De är kommandon för felsökning"],"correct":0,"why":"WPA2 och WPA3 är säkerhetsprotokoll/-standarder som skyddar Wi-Fi-nätverk. WPA3 är den nyare generationen."},
+{"q":"Vad är en vanlig skillnad mellan singelmodsfiber och multimodsfiber?","a":["Singelmod använder en mycket smal ljusväg och passar ofta längre avstånd; multimod används ofta på kortare avstånd","Multimod kan bara skicka elektriska signaler","Singelmod används bara för telefonladdning","Det finns ingen skillnad i användning"],"correct":0,"why":"Singelmodsfiber har liten kärna och används ofta för långa länkar. Multimod har större kärna och används ofta på kortare avstånd, exempelvis i byggnader."},
+{"q":"Vad används en RJ45-kontakt vanligtvis till i ett Ethernet-nät med partvinnad kopparkabel?","a":["Att ansluta nätverkskabeln till nätverksutrustning","Att ansluta fiber direkt utan omvandlare","Att ansluta en bildskärm","Att mäta optisk effekt"],"correct":0,"why":"RJ45 (8P8C-kontakt i vanligt språkbruk) används ofta på Ethernet-kablar av typen partvinnad koppar."},
+{"q":"Varför använder man en kabeltestare när man installerat en nätverkskabel?","a":["För att kontrollera ledarnas koppling och upptäcka avbrott eller felkoppling","För att öka internethastigheten automatiskt","För att ändra routerns IP-adress","För att kryptera trafiken"],"correct":0,"why":"En kabeltestare kan kontrollera att ledarna har rätt kontinuitet och ordning samt upptäcka vanliga kabelproblem."},
+{"q":"Vilket påstående om Wi-Fi-banden 2,4 GHz och 5 GHz är generellt korrekt?","a":["2,4 GHz har ofta längre räckvidd men mer störningar; 5 GHz kan ge högre hastighet på kortare avstånd","2,4 GHz fungerar bara utomhus","5 GHz går alltid längre genom väggar","Banden är olika namn på Ethernet-kablar"],"correct":0,"why":"2,4 GHz har ofta bättre räckvidd och väggpenetration men är mer belastat. 5 GHz erbjuder ofta högre kapacitet men kortare räckvidd."},
+{"q":"Vilken åtgärd är bäst om en nätverksanslutning inte fungerar och du vill felsöka systematiskt?","a":["Kontrollera först fysisk anslutning och länkstatus, och fortsätt sedan med IP-inställningar och tester","Byt alla datorer direkt","Stäng av all nätverkssäkerhet permanent","Ändra slumpmässigt flera inställningar samtidigt"],"correct":0,"why":"Systematisk felsökning börjar ofta med kabel, kontakt och länkstatus och går sedan vidare till IP-konfiguration, gateway, DNS och tester."}
+];
 let index = 0, score = 0, answered = false;
 const $ = id => document.getElementById(id);
+
 function showQuestion(){
-  answered = false;
-  const item = questions[index];
-  $("counter").textContent = `Fråga ${index+1} av ${questions.length}`;
-  $("points").textContent = `Rätt: ${score}`;
-  $("progress").style.width = `${index/questions.length*100}%`;
-  $("question").textContent = item.q;
-  $("answers").innerHTML = "";
-  $("feedback").className = "feedback";
-  $("feedback").textContent = "";
-  item.a.forEach((answer,i)=>{
-    const button = document.createElement("button");
-    button.type = "button"; button.className = "answer";
-    const letter = document.createElement("span");
-    letter.className = "letter"; letter.textContent = ["A","B","C","D"][i]+".";
-    const text = document.createElement("span"); text.textContent = answer;
-    button.append(letter,text);
-    button.addEventListener("click",()=>choose(i));
-    $("answers").append(button);
-  });
-  $("next").disabled = true;
-  $("next").textContent = index === questions.length-1 ? "Visa resultat" : "Nästa fråga";
+answered = false;
+const item = questions[index];
+$("counter").textContent = `Fråga ${index+1} av ${questions.length}`;
+$("points").textContent = `Rätt: ${score}`;
+$("progress").style.width = `${index/questions.length*100}%`;
+$("question").textContent = item.q;
+$("answers").innerHTML = "";
+$("feedback").className = "feedback";
+$("feedback").textContent = "";
+
+item.a.forEach((answer,i)=>{
+const button = document.createElement("button");
+button.type = "button";
+button.className = "answer";
+
+const letter = document.createElement("span");
+letter.className = "letter";
+letter.textContent = ["A","B","C","D"][i]+".";
+
+const text = document.createElement("span");
+text.textContent = answer;
+
+button.append(letter,text);
+button.addEventListener("click",()=>choose(i));
+$("answers").append(button);
+});
+
+$("next").disabled = true;
+$("next").textContent = index === questions.length-1 ? "Visa resultat" : "Nästa fråga";
 }
+
 function choose(choice){
-  if(answered) return;
-  answered = true;
-  const item = questions[index], correct = choice === item.correct;
-  if(correct) score++;
-  [...$("answers").children].forEach((button,i)=>{
-    button.disabled = true;
-    if(i === item.correct) button.style.borderColor = "var(--good)";
-    if(i === choice && !correct) button.style.borderColor = "var(--bad)";
-  });
-  $("feedback").className = "feedback show " + (correct ? "good" : "bad");
-  $("feedback").textContent = (correct ? "Rätt svar! " : "Inte riktigt. Rätt svar är " + ["A","B","C","D"][item.correct] + ". ") + item.why;
-  $("points").textContent = `Rätt: ${score}`;
-  $("next").disabled = false;
+if(answered) return;
+answered = true;
+
+const item = questions[index];
+const correct = choice === item.correct;
+
+if(correct) score++;
+
+[...$("answers").children].forEach((button,i)=>{
+button.disabled = true;
+if(i === item.correct) button.style.borderColor = "var(--good)";
+if(i === choice && !correct) button.style.borderColor = "var(--bad)";
+});
+
+$("feedback").className = "feedback show " + (correct ? "good" : "bad");
+$("feedback").textContent =
+(correct ? "Rätt svar! " : "Inte riktigt. Rätt svar är " + ["A","B","C","D"][item.correct] + ". ")
++ item.why;
+
+$("points").textContent = `Rätt: ${score}`;
+$("next").disabled = false;
 }
+
 function next(){
-  if(!answered) return;
-  if(index < questions.length-1){index++;showQuestion();}
-  else finish();
+if(!answered) return;
+
+if(index < questions.length-1){
+index++;
+showQuestion();
+} else {
+finish();
 }
+}
+
 function finish(){
-  $("quiz").classList.add("hidden");
-  $("result").classList.remove("hidden");
-  $("score").textContent = `${score} / ${questions.length}`;
-  const percent = Math.round(score/questions.length*100);
-  $("message").textContent = `Du fick ${percent} %. ${percent >= 80 ? "Mycket bra jobbat!" : percent >= 60 ? "Bra kämpat – repetera gärna frågorna du missade." : "Fortsätt öva – du blir bättre för varje försök!"}`;
+$("quiz").classList.add("hidden");
+$("result").classList.remove("hidden");
+$("score").textContent = `${score} / ${questions.length}`;
+
+const percent = Math.round(score/questions.length*100);
+
+$("message").textContent =
+`Du fick ${percent} %. ${
+percent >= 80
+? "Mycket bra jobbat!"
+: percent >= 60
+? "Bra kämpat – repetera gärna frågorna du missade."
+: "Fortsätt öva – du blir bättre för varje försök!"
+}`;
 }
+
 function restart(){
-  index=0;score=0;
-  $("result").classList.add("hidden");$("quiz").classList.remove("hidden");
-  showQuestion();
+index = 0;
+score = 0;
+$("result").classList.add("hidden");
+$("quiz").classList.remove("hidden");
+showQuestion();
 }
+
 $("next").addEventListener("click",next);
 $("restart").addEventListener("click",restart);
 $("again").addEventListener("click",restart);
+
 showQuestion();
 </script>
 </body>
