@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mitt quiz – Kommunikationsnät 1</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f1f5f9;
+    color: #172033;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  .card {
+    background: white;
+    padding: 24px;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px #0001;
+  }
+  h1 { color: #155eef; }
+  .option {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 14px;
+    margin: 9px 0;
+    border: 1px solid #cbd5e1;
+    border-radius: 9px;
+    background: white;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  .option:hover { background: #eff6ff; }
+  .option:disabled { cursor: default; color: #172033; }
+  .correct { background: #dcfce7 !important; }
+  .wrong { background: #fee2e2 !important; }
+  button.main {
+    background: #155eef;
+    color: white;
+    border: 0;
+    border-radius: 9px;
+    padding: 13px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 12px;
+  }
+  #progress { color: #475569; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>Kommunikationsnät 1</h1>
+  <p>Träna inför provet med kryssfrågor!</p>
+  <p id="progress"></p>
+  <h3 id="question"></h3>
+  <div id="answers"></div>
+  <p id="feedback" aria-live="polite"></p>
+  <button class="main" id="next" hidden>Nästa fråga</button>
+  <div id="result" hidden></div>
+</div>
+
+<script>
+const questions = [
+  {
+    q: "Vad är ett datornätverk?",
+    a: [
+      "Ett skrivprogram",
+      "Två eller flera enheter som kommunicerar",
+      "En skrivare",
+      "Ett operativsystem"
+    ],
+    correct: 1
+  },
+  {
+    q: "Vad betyder LAN?",
+    a: [
+      "Local Area Network",
+      "Large Access Number",
+      "Long Analog Network",
+      "Local Application Node"
+    ],
+    correct: 0
+  },
+  {
+    q: "Vad används en router till?",
+    a: [
+      "Skriva ut dokument",
+      "Lagra bilder",
+      "Vidarebefordra trafik mellan nätverk",
+      "Ladda batterier"
+    ],
+    correct: 2
+  },
+  {
+    q: "Hur många bitar har en IPv4-adress?",
+    a: ["16", "32", "64", "128"],
+    correct: 1
+  },
+  {
+    q: "Vad används DNS till?",
+    a: [
+      "Översätta domännamn till IP-adresser",
+      "Ladda batterier",
+      "Byta nätverkskabel",
+      "Skapa användarkonton"
+    ],
+    correct: 0
+  }
+];
+
+let index = 0;
+let score = 0;
+let answered = false;
+
+const questionEl = document.getElementById("question");
+const answersEl = document.getElementById("answers");
+const feedbackEl = document.getElementById("feedback");
+const nextBtn = document.getElementById("next");
+const progressEl = document.getElementById("progress");
+const resultEl = document.getElementById("result");
+
+function showQuestion() {
+  answered = false;
+  feedbackEl.textContent = "";
+  nextBtn.hidden = true;
+  resultEl.hidden = true;
+  answersEl.replaceChildren();
+
+  const item = questions[index];
+  questionEl.textContent = `${index + 1}. ${item.q}`;
+  progressEl.textContent =
+    `Fråga ${index + 1} av ${questions.length}`;
+
+  item.a.forEach((answer, i) => {
+    const btn = document.createElement("button");
+    btn.className = "option";
+    btn.textContent = `${String.fromCharCode(65 + i)}. ${answer}`;
+    btn.addEventListener("click", () => checkAnswer(i));
+    answersEl.appendChild(btn);
+  });
+}
+
+function checkAnswer(choice) {
+  if (answered) return;
+  answered = true;
+
+  const item = questions[index];
+  const buttons = answersEl.querySelectorAll("button");
+
+  buttons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === item.correct) btn.classList.add("correct");
+    if (i === choice && i !== item.correct) {
+      btn.classList.add("wrong");
+    }
+  });
+
+  if (choice === item.correct) {
+    score++;
+    feedbackEl.textContent = "Rätt svar! Bra jobbat.";
+  } else {
+    feedbackEl.textContent =
+      "Fel svar. Rätt svar är: " + item.a[item.correct];
+  }
+
+  nextBtn.textContent =
+    index === questions.length - 1
+      ? "Visa resultat"
+      : "Nästa fråga";
+  nextBtn.hidden = false;
+}
+
+nextBtn.addEventListener("click", () => {
+  if (index < questions.length - 1) {
+    index++;
+    showQuestion();
+  } else {
+    questionEl.textContent = "Quizet är klart!";
+    answersEl.replaceChildren();
+    progressEl.textContent = "Alla frågor besvarade";
+    feedbackEl.textContent = "";
+    nextBtn.hidden = true;
+    resultEl.hidden = false;
+    resultEl.textContent =
+      `Du fick ${score} av ${questions.length} rätt (${Math.round(
+        score / questions.length * 100
+      )} %).`;
+
+    const restart = document.createElement("button");
+    restart.className = "main";
+    restart.textContent = "Gör om quizet";
+    restart.addEventListener("click", () => {
+      index = 0;
+      score = 0;
+      showQuestion();
+    });
+    resultEl.appendChild(document.createElement("br"));
+    resultEl.appendChild(restart);
+  }
+});
+
+showQuestion();
+</script>
+</body>
+</html>
