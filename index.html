@@ -1,206 +1,101 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="sv">
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Mitt quiz – Kommunikationsnät 1</title>
+<title>Kommunikationsnät 1 – Quiz</title>
 <style>
-  body {
-    font-family: Arial, sans-serif;
-    background: #f1f5f9;
-    color: #172033;
-    max-width: 720px;
-    margin: 0 auto;
-    padding: 20px;
-  }
-  .card {
-    background: white;
-    padding: 24px;
-    border-radius: 16px;
-    box-shadow: 0 4px 16px #0001;
-  }
-  h1 { color: #155eef; }
-  .option {
-    display: block;
-    width: 100%;
-    text-align: left;
-    padding: 14px;
-    margin: 9px 0;
-    border: 1px solid #cbd5e1;
-    border-radius: 9px;
-    background: white;
-    font-size: 16px;
-    cursor: pointer;
-  }
-  .option:hover { background: #eff6ff; }
-  .option:disabled { cursor: default; color: #172033; }
-  .correct { background: #dcfce7 !important; }
-  .wrong { background: #fee2e2 !important; }
-  button.main {
-    background: #155eef;
-    color: white;
-    border: 0;
-    border-radius: 9px;
-    padding: 13px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    margin-top: 12px;
-  }
-  #progress { color: #475569; }
+:root{color-scheme:dark;--bg:#101827;--panel:#1b2940;--panel2:#243550;--text:#f4f7fb;--muted:#b9c7d9;--accent:#62b5ff;--good:#35c98a;--bad:#ff7777}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#101827,#172d46);color:var(--text);font:16px/1.5 system-ui,Arial,sans-serif;min-height:100vh;padding:24px}
+main{max-width:850px;margin:0 auto}.top{text-align:center;margin:12px 0 24px}.top h1{font-size:clamp(27px,5vw,40px);margin:0 0 8px}.top p{color:var(--muted);margin:0}
+.card{background:var(--panel);border:1px solid #344965;border-radius:18px;padding:clamp(18px,4vw,30px);box-shadow:0 12px 35px #0004}
+.row{display:flex;justify-content:space-between;gap:12px;color:var(--muted);font-size:14px}.track{height:9px;background:#34445b;border-radius:20px;overflow:hidden;margin:12px 0 24px}.fill{height:100%;width:0;background:var(--accent);transition:width .2s}
+h2{font-size:22px;line-height:1.35;margin:0 0 20px}.answers{display:grid;gap:12px}.answer{display:flex;align-items:flex-start;gap:12px;width:100%;text-align:left;padding:15px;border:1px solid #49617e;border-radius:12px;background:var(--panel2);color:var(--text);font:inherit;cursor:pointer}.answer:hover{border-color:var(--accent)}.answer.selected{outline:2px solid var(--accent);background:#29496b}.answer:disabled{cursor:default;opacity:1}.letter{font-weight:800;color:var(--accent);min-width:22px}
+.feedback{display:none;margin-top:18px;padding:15px;border-radius:12px;background:#263b51}.feedback.show{display:block}.feedback.good{border-left:5px solid var(--good)}.feedback.bad{border-left:5px solid var(--bad)}
+.controls{display:flex;gap:12px;justify-content:space-between;flex-wrap:wrap;margin-top:22px}button.action{border:0;border-radius:11px;padding:12px 20px;font-weight:750;font-size:15px;cursor:pointer;background:var(--accent);color:#071523}button.action.secondary{background:#3b506c;color:var(--text)}button.action:disabled{opacity:.4;cursor:not-allowed}
+.result{text-align:center}.score{font-size:48px;font-weight:850;color:var(--accent);margin:8px}.small{color:var(--muted);font-size:14px}.hidden{display:none}
+@media(max-width:520px){body{padding:12px}.controls button{flex:1}}
 </style>
 </head>
 <body>
-<div class="card">
-  <h1>Kommunikationsnät 1</h1>
-  <p>Träna inför provet med kryssfrågor!</p>
-  <p id="progress"></p>
-  <h3 id="question"></h3>
-  <div id="answers"></div>
-  <p id="feedback" aria-live="polite"></p>
-  <button class="main" id="next" hidden>Nästa fråga</button>
-  <div id="result" hidden></div>
-</div>
-
+<main>
+<header class="top"><h1>Kommunikationsnät 1</h1><p>Öva inför quizet – 40 frågor med fyra svarsalternativ</p></header>
+<section class="card" id="quiz">
+ <div class="row"><span id="counter">Fråga 1 av 40</span><span id="points">Rätt: 0</span></div>
+ <div class="track"><div class="fill" id="progress"></div></div>
+ <h2 id="question"></h2>
+ <div class="answers" id="answers"></div>
+ <div class="feedback" id="feedback" aria-live="polite"></div>
+ <div class="controls"><button class="action secondary" id="restart" type="button">Börja om</button><button class="action" id="next" type="button" disabled>Nästa fråga</button></div>
+</section>
+<section class="card result hidden" id="result">
+ <h2>Quizet är klart!</h2><div class="score" id="score"></div><p id="message"></p>
+ <p class="small">Du kan göra om quizet och träna igen.</p>
+ <button class="action" id="again" type="button">Gör om quizet</button>
+</section>
+</main>
 <script>
-const questions = [
-  {
-    q: "Vad är ett datornätverk?",
-    a: [
-      "Ett skrivprogram",
-      "Två eller flera enheter som kommunicerar",
-      "En skrivare",
-      "Ett operativsystem"
-    ],
-    correct: 1
-  },
-  {
-    q: "Vad betyder LAN?",
-    a: [
-      "Local Area Network",
-      "Large Access Number",
-      "Long Analog Network",
-      "Local Application Node"
-    ],
-    correct: 0
-  },
-  {
-    q: "Vad används en router till?",
-    a: [
-      "Skriva ut dokument",
-      "Lagra bilder",
-      "Vidarebefordra trafik mellan nätverk",
-      "Ladda batterier"
-    ],
-    correct: 2
-  },
-  {
-    q: "Hur många bitar har en IPv4-adress?",
-    a: ["16", "32", "64", "128"],
-    correct: 1
-  },
-  {
-    q: "Vad används DNS till?",
-    a: [
-      "Översätta domännamn till IP-adresser",
-      "Ladda batterier",
-      "Byta nätverkskabel",
-      "Skapa användarkonton"
-    ],
-    correct: 0
-  }
-];
-
-let index = 0;
-let score = 0;
-let answered = false;
-
-const questionEl = document.getElementById("question");
-const answersEl = document.getElementById("answers");
-const feedbackEl = document.getElementById("feedback");
-const nextBtn = document.getElementById("next");
-const progressEl = document.getElementById("progress");
-const resultEl = document.getElementById("result");
-
-function showQuestion() {
+const questions = [{"q": "Vad är ett datornätverk?", "a": ["Ett program för ordbehandling", "En enda dator utan anslutning", "Flera enheter som kan kommunicera med varandra", "En typ av batteri"], "correct": 2, "why": "Ett nätverk kopplar ihop enheter så att de kan utbyta data och dela resurser."}, {"q": "Vad betyder LAN?", "a": ["Long Analog Network", "Large Access Number", "Local Area Network", "Linked Automatic Node"], "correct": 2, "why": "LAN är ett lokalt nätverk, till exempel i en bostad eller skola."}, {"q": "Vad betyder WAN?", "a": ["Wireless Access Name", "Wide Area Network", "Wired Analog Node", "Web Application Network"], "correct": 1, "why": "WAN är ett geografiskt större nätverk som kopplar samman nätverk över längre avstånd."}, {"q": "Vad betyder WLAN?", "a": ["Wired Local Area Node", "Web Local Address Number", "Wide Link Analog Network", "Wireless Local Area Network"], "correct": 3, "why": "WLAN är ett trådlöst lokalt nätverk, vanligtvis Wi-Fi."}, {"q": "Vilken uppgift har en router?", "a": ["Lagra alla lösenord", "Skriva ut dokument", "Omvandla växelström till likström", "Koppla samman nätverk och vidarebefordra trafik mellan dem"], "correct": 3, "why": "En router skickar trafik mellan olika IP-nätverk, exempelvis hemnätverket och internet."}, {"q": "Vilken uppgift har en switch?", "a": ["Koppla ihop enheter i ett lokalt nätverk", "Tilldela alltid publika IP-adresser", "Förstärka ljudsignaler", "Visa webbsidor"], "correct": 0, "why": "En switch kopplar ihop nätverksenheter i ett LAN och skickar ramar till rätt port."}, {"q": "Vad används en accesspunkt till?", "a": ["Att mäta kabelns längd", "Att lagra säkerhetskopior", "Att kyla en server", "Att ge trådlös åtkomst till ett nätverk"], "correct": 3, "why": "En accesspunkt låter trådlösa enheter ansluta till ett nätverk."}, {"q": "Vad är en brandvägg?", "a": ["En fysisk vägg i ett serverrum", "En funktion som filtrerar nätverkstrafik enligt regler", "Ett verktyg för att skala kabel", "En kabeltyp"], "correct": 1, "why": "En brandvägg tillåter eller blockerar trafik utifrån säkerhetsregler."}, {"q": "Vad är en server?", "a": ["En dator eller tjänst som tillhandahåller resurser till klienter", "En typ av skärm", "En nätverkskabel", "En kontakt för fiber"], "correct": 0, "why": "En server erbjuder exempelvis filer, webbsidor eller inloggningstjänster."}, {"q": "Vad är en klient i ett nätverk?", "a": ["En internetleverantör", "En typ av router", "En enhet eller ett program som använder en tjänst", "En kabeltestare"], "correct": 2, "why": "En klient begär eller använder tjänster från exempelvis en server."}, {"q": "Vad är en topologi?", "a": ["En typ av fiberkontakt", "Ett lösenordsformat", "En internethastighet", "Nätverkets fysiska eller logiska uppbyggnad"], "correct": 3, "why": "Topologi beskriver hur nätverkets enheter och länkar är organiserade."}, {"q": "Vilken topologi är vanlig i moderna Ethernet-LAN?", "a": ["Buss", "Stjärna", "Full mesh i alla hem", "Ring"], "correct": 1, "why": "I stjärntopologi ansluts enheterna till en central switch."}, {"q": "Vad är internet?", "a": ["En typ av nätverkskontakt", "Ett enda lokalt nätverk", "Ett globalt nätverk av sammankopplade nätverk", "Ett operativsystem"], "correct": 2, "why": "Internet består av många sammankopplade nätverk som använder gemensamma protokoll."}, {"q": "Vad är en IP-adress?", "a": ["En logisk adress som identifierar ett nätverksgränssnitt", "En kabelstandard", "Ett Wi-Fi-lösenord", "Ett serienummer på en skärm"], "correct": 0, "why": "IP-adresser används för att adressera och routa datapaket i IP-nätverk."}, {"q": "Hur många bitar består en IPv4-adress av?", "a": ["16", "32", "64", "128"], "correct": 1, "why": "IPv4-adresser är 32 bitar långa."}, {"q": "Hur många bitar består en IPv6-adress av?", "a": ["64", "32", "48", "128"], "correct": 3, "why": "IPv6-adresser är 128 bitar långa."}, {"q": "Vilket är ett privat IPv4-adressintervall?", "a": ["192.168.0.0/16", "8.8.8.0/24", "1.1.1.0/24", "203.0.113.0/24"], "correct": 0, "why": "192.168.0.0/16 är ett av de privata IPv4-intervallen."}, {"q": "Vad används nätmasken till?", "a": ["Att visa datorns modell", "Att skilja nätverksdelen från värddelen i en IPv4-adress", "Att ange kabelns längd", "Att kryptera Wi-Fi"], "correct": 1, "why": "Nätmasken visar vilka bitar som tillhör nätverket respektive värdadressen."}, {"q": "Vad är standard-gateway?", "a": ["En DNS-post", "Enheten som skickar trafik vidare till andra nätverk", "Datorns skrivare", "En fiberkontakt"], "correct": 1, "why": "Standard-gateway är normalt routern som används för trafik utanför det lokala nätet."}, {"q": "Vad gör DHCP?", "a": ["Tilldelar nätverksinställningar automatiskt", "Krypterar filer", "Översätter domännamn till IP-adresser", "Testar fiberljus"], "correct": 0, "why": "DHCP kan automatiskt ge klienter IP-adress, nätmask, gateway och DNS-server."}, {"q": "Vad gör DNS?", "a": ["Översätter domännamn till IP-adresser", "Blockerar all internettrafik", "Mäter signalstyrka", "Tilldelar MAC-adresser"], "correct": 0, "why": "DNS hjälper till att hitta IP-adressen som hör till ett domännamn."}, {"q": "Vad är en MAC-adress?", "a": ["En IP-nätmask", "Ett lösenord", "En publik webbadress", "En adress på länklagret som identifierar ett nätverksgränssnitt"], "correct": 3, "why": "MAC-adresser används bland annat för kommunikation inom ett lokalt Ethernet-nät."}, {"q": "Vad betyder att en IP-adress är dynamisk?", "a": ["Den kan tilldelas automatiskt och ändras över tid", "Den fungerar bara med fiber", "Den är alltid samma", "Den saknar nätmask"], "correct": 0, "why": "Dynamiska adresser delas ofta ut av DHCP och kan ändras."}, {"q": "Vad är en statisk IP-adress?", "a": ["En adress som är manuellt eller fast konfigurerad", "En adress som alltid slumpas fram", "En MAC-adress", "En adress som bara används i Wi-Fi"], "correct": 0, "why": "En statisk adress är avsedd att inte ändras automatiskt."}, {"q": "Vad betyder 127.0.0.1 i IPv4?", "a": ["Standard-gateway", "Loopback-adress till den egna datorn", "Broadcast-adress för alla nät", "DNS-server på internet"], "correct": 1, "why": "127.0.0.1 används för att testa IP-funktioner på den egna datorn."}, {"q": "Vad kan en adress som börjar med 169.254 ofta tyda på i Windows?", "a": ["Att datorn har snabb fiber", "Att routern är avstängd med säkerhet", "Att datorn inte fått en IPv4-adress från DHCP", "Att DNS fungerar perfekt"], "correct": 2, "why": "Windows kan själv tilldela en APIPA-adress när DHCP inte svarar."}, {"q": "Vilken kabeltyp används ofta för Ethernet i byggnader?", "a": ["Högtalarkabel", "Partvinnad kopparkabel", "Koaxialkabel för TV", "USB-kabel"], "correct": 1, "why": "Partvinnad kopparkabel, exempelvis Cat 5e eller Cat 6, används ofta för Ethernet."}, {"q": "Varför är ledarna i nätverkskabel tvinnade par?", "a": ["För att minska störningar och överhörning", "För att den ska fungera som antenn", "För att öka kabelns vikt", "För att göra kabeln genomskinlig"], "correct": 0, "why": "Tvinningen hjälper till att minska elektromagnetiska störningar och överhörning."}, {"q": "Vad betyder UTP?", "a": ["Unshielded Twisted Pair", "Unified Telephone Protocol", "Ultra Thin Plastic", "Universal Transfer Port"], "correct": 0, "why": "UTP är partvinnad kabel utan individuell eller gemensam skärmning."}, {"q": "Vad är en skärmad nätverkskabel till för?", "a": ["Att minska påverkan från elektromagnetiska störningar", "Att ge kabeln högre spänning", "Att ersätta en router", "Att öka IP-adressens längd"], "correct": 0, "why": "Skärmning kan minska störningspåverkan när den installeras och jordas korrekt."}, {"q": "Vad används en RJ45-kontakt (8P8C) vanligtvis till?", "a": ["HDMI-bild", "Eluttag", "Ethernet över partvinnad kopparkabel", "Fiber direkt utan omvandlare"], "correct": 2, "why": "8P8C-kontakter används vanligtvis för Ethernet-kablar med kopparledare."}, {"q": "Vad är en patchpanel?", "a": ["En typ av brandvägg", "En trådlös router", "En panel där fasta nätverkskablar termineras och organiseras", "Ett program för felsökning"], "correct": 2, "why": "Patchpaneler samlar och organiserar kabelanslutningar i exempelvis ett teknikskåp."}, {"q": "Vad används en kabeltestare till?", "a": ["Mäta luftfuktighet", "Kontrollera exempelvis ledarordning och kabelavbrott", "Kryptera nätverkstrafik", "Tilldela IP-adresser"], "correct": 1, "why": "En kabeltestare kan upptäcka felkopplingar, avbrott och vissa andra kabelproblem."}, {"q": "Vad är fiberoptisk kabel?", "a": ["En trådlös signal", "En vanlig elkabel", "Kabel som överför data med ljus", "Kabel som överför data med vatten"], "correct": 2, "why": "Fiber använder ljus i optiska fibrer för att överföra information."}, {"q": "Vilken är en fördel med fiber jämfört med kopparkabel?", "a": ["Fiber kan aldrig skadas", "Fiber leder ström bättre", "Fiber påverkas inte av elektromagnetiska störningar på samma sätt", "Fiber behöver alltid batterier"], "correct": 2, "why": "Optisk fiber är okänslig för elektromagnetiska störningar."}, {"q": "Vad är en nackdel eller försiktighetsåtgärd vid fiberarbete?", "a": ["Fiber fungerar bara utomhus", "Fiber får inte böjas alls", "Fiber måste alltid jordas som koppar", "Man ska aldrig titta in i en aktiv fiberände"], "correct": 3, "why": "Laserljus kan vara skadligt för ögonen. Titta aldrig in i en fiberände."}, {"q": "Vad kan en SFP-modul användas till?", "a": ["Skapa ett lösenord", "Ansluta exempelvis fiber eller koppar till en switch/router", "Mäta temperatur i rummet", "Ersätta operativsystemet"], "correct": 1, "why": "SFP är en utbytbar transceiver som ger en nätverksport ett visst anslutningsgränssnitt."}, {"q": "Vad betyder bandbredd i nätverkssammanhang?", "a": ["Tiden det tar för en signal att nå fram", "Kabelns fysiska bredd", "Den teoretiska eller angivna kapaciteten för dataöverföring", "Antalet användarkonton"], "correct": 2, "why": "Bandbredd beskriver överföringskapacitet, ofta uttryckt i bit per sekund."}, {"q": "Vad betyder genomströmning (throughput)?", "a": ["Den faktiska mängden data som överförs per tidsenhet", "Längden på en kabel", "Antalet routrar i ett nät", "Antalet portar i en switch"], "correct": 0, "why": "Genomströmning är den datahastighet som faktiskt uppnås."}, {"q": "Vad är latens?", "a": ["En metod för kabelmärkning", "Antalet IP-adresser", "En typ av kontakt", "Fördröjningen innan data kommer fram"], "correct": 3, "why": "Latens är fördröjning i kommunikationen, ofta mätt i millisekunder."}];
+let index = 0, score = 0, answered = false;
+const $ = id => document.getElementById(id);
+function showQuestion(){
   answered = false;
-  feedbackEl.textContent = "";
-  nextBtn.hidden = true;
-  resultEl.hidden = true;
-  answersEl.replaceChildren();
-
   const item = questions[index];
-  questionEl.textContent = `${index + 1}. ${item.q}`;
-  progressEl.textContent =
-    `Fråga ${index + 1} av ${questions.length}`;
-
-  item.a.forEach((answer, i) => {
-    const btn = document.createElement("button");
-    btn.className = "option";
-    btn.textContent = `${String.fromCharCode(65 + i)}. ${answer}`;
-    btn.addEventListener("click", () => checkAnswer(i));
-    answersEl.appendChild(btn);
+  $("counter").textContent = `Fråga ${index+1} av ${questions.length}`;
+  $("points").textContent = `Rätt: ${score}`;
+  $("progress").style.width = `${index/questions.length*100}%`;
+  $("question").textContent = item.q;
+  $("answers").innerHTML = "";
+  $("feedback").className = "feedback";
+  $("feedback").textContent = "";
+  item.a.forEach((answer,i)=>{
+    const button = document.createElement("button");
+    button.type = "button"; button.className = "answer";
+    const letter = document.createElement("span");
+    letter.className = "letter"; letter.textContent = ["A","B","C","D"][i]+".";
+    const text = document.createElement("span"); text.textContent = answer;
+    button.append(letter,text);
+    button.addEventListener("click",()=>choose(i));
+    $("answers").append(button);
   });
+  $("next").disabled = true;
+  $("next").textContent = index === questions.length-1 ? "Visa resultat" : "Nästa fråga";
 }
-
-function checkAnswer(choice) {
-  if (answered) return;
+function choose(choice){
+  if(answered) return;
   answered = true;
-
-  const item = questions[index];
-  const buttons = answersEl.querySelectorAll("button");
-
-  buttons.forEach((btn, i) => {
-    btn.disabled = true;
-    if (i === item.correct) btn.classList.add("correct");
-    if (i === choice && i !== item.correct) {
-      btn.classList.add("wrong");
-    }
+  const item = questions[index], correct = choice === item.correct;
+  if(correct) score++;
+  [...$("answers").children].forEach((button,i)=>{
+    button.disabled = true;
+    if(i === item.correct) button.style.borderColor = "var(--good)";
+    if(i === choice && !correct) button.style.borderColor = "var(--bad)";
   });
-
-  if (choice === item.correct) {
-    score++;
-    feedbackEl.textContent = "Rätt svar! Bra jobbat.";
-  } else {
-    feedbackEl.textContent =
-      "Fel svar. Rätt svar är: " + item.a[item.correct];
-  }
-
-  nextBtn.textContent =
-    index === questions.length - 1
-      ? "Visa resultat"
-      : "Nästa fråga";
-  nextBtn.hidden = false;
+  $("feedback").className = "feedback show " + (correct ? "good" : "bad");
+  $("feedback").textContent = (correct ? "Rätt svar! " : "Inte riktigt. Rätt svar är " + ["A","B","C","D"][item.correct] + ". ") + item.why;
+  $("points").textContent = `Rätt: ${score}`;
+  $("next").disabled = false;
 }
-
-nextBtn.addEventListener("click", () => {
-  if (index < questions.length - 1) {
-    index++;
-    showQuestion();
-  } else {
-    questionEl.textContent = "Quizet är klart!";
-    answersEl.replaceChildren();
-    progressEl.textContent = "Alla frågor besvarade";
-    feedbackEl.textContent = "";
-    nextBtn.hidden = true;
-    resultEl.hidden = false;
-    resultEl.textContent =
-      `Du fick ${score} av ${questions.length} rätt (${Math.round(
-        score / questions.length * 100
-      )} %).`;
-
-    const restart = document.createElement("button");
-    restart.className = "main";
-    restart.textContent = "Gör om quizet";
-    restart.addEventListener("click", () => {
-      index = 0;
-      score = 0;
-      showQuestion();
-    });
-    resultEl.appendChild(document.createElement("br"));
-    resultEl.appendChild(restart);
-  }
-});
-
+function next(){
+  if(!answered) return;
+  if(index < questions.length-1){index++;showQuestion();}
+  else finish();
+}
+function finish(){
+  $("quiz").classList.add("hidden");
+  $("result").classList.remove("hidden");
+  $("score").textContent = `${score} / ${questions.length}`;
+  const percent = Math.round(score/questions.length*100);
+  $("message").textContent = `Du fick ${percent} %. ${percent >= 80 ? "Mycket bra jobbat!" : percent >= 60 ? "Bra kämpat – repetera gärna frågorna du missade." : "Fortsätt öva – du blir bättre för varje försök!"}`;
+}
+function restart(){
+  index=0;score=0;
+  $("result").classList.add("hidden");$("quiz").classList.remove("hidden");
+  showQuestion();
+}
+$("next").addEventListener("click",next);
+$("restart").addEventListener("click",restart);
+$("again").addEventListener("click",restart);
 showQuestion();
 </script>
 </body>
